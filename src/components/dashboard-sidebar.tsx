@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  BarChart3,
   Home,
   ShoppingBag,
   ShoppingCart,
@@ -145,16 +144,19 @@ export default function DashboardSidebar() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/orders"
                 className={cn(
-                  "flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
+                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
                   isCollapsed && "md:justify-center",
+                  isActive("/orders")
+                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
+                    : "text-gray-700 dark:text-gray-200",
                 )}
                 onClick={closeSidebar}
               >
-                <BarChart3 className="w-5 h-5 mr-3 md:mr-0" />
+                <ShoppingCart className="w-5 h-5 mr-3 md:mr-0" />
                 <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Sales Analytics
+                  Orders
                 </span>
               </Link>
             </li>
@@ -173,21 +175,6 @@ export default function DashboardSidebar() {
                 <ShoppingBag className="w-5 h-5 mr-3 md:mr-0" />
                 <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
                   Products
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className={cn(
-                  "flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                )}
-                onClick={closeSidebar}
-              >
-                <ShoppingCart className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Orders
                 </span>
               </Link>
             </li>
@@ -229,10 +216,13 @@ export default function DashboardSidebar() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/settings"
                 className={cn(
-                  "flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
+                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
                   isCollapsed && "md:justify-center",
+                  isActive("/settings")
+                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
+                    : "text-gray-700 dark:text-gray-200",
                 )}
                 onClick={closeSidebar}
               >
