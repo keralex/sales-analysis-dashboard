@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { generateCustomerData } from "../lib/mock-data"
+import { generateCustomerData } from "@/lib/mock-data"
 import {
   LineChart,
   Line,
@@ -18,6 +18,7 @@ import {
   AreaChart,
   Area,
 } from "recharts"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function CustomerAnalysis() {
   const [period, setPeriod] = useState<"month" | "quarter" | "year">("month")
@@ -133,22 +134,28 @@ export default function CustomerAnalysis() {
 
       <Tabs defaultValue="growth" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="growth" onClick={() => setPeriod("month")}>
-            Customer Growth
-          </TabsTrigger>
-          <TabsTrigger value="regions" onClick={() => setPeriod("month")}>
-            Regional Distribution
-          </TabsTrigger>
-          <TabsTrigger value="retention" onClick={() => setPeriod("quarter")}>
-            Retention Trends
-          </TabsTrigger>
+          <TabsTrigger value="growth">Customer Growth</TabsTrigger>
+          <TabsTrigger value="regions">Regional Distribution</TabsTrigger>
+          <TabsTrigger value="retention">Retention Trends</TabsTrigger>
         </TabsList>
 
         <TabsContent value="growth" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Customer Growth Over Time</CardTitle>
-              <CardDescription>New and returning customers over the selected period</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Customer Growth Over Time</CardTitle>
+                <CardDescription>New and returning customers over the selected period</CardDescription>
+              </div>
+              <Select value={period} onValueChange={(value) => setPeriod(value as "month" | "quarter" | "year")}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select time period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month">Last 30 Days</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent className="h-96">
               <ResponsiveContainer width="100%" height="100%">
@@ -242,9 +249,21 @@ export default function CustomerAnalysis() {
 
         <TabsContent value="retention" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Customer Retention Trends</CardTitle>
-              <CardDescription>New vs returning customers over time</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Customer Retention Trends</CardTitle>
+                <CardDescription>New vs returning customers over time</CardDescription>
+              </div>
+              <Select value={period} onValueChange={(value) => setPeriod(value as "month" | "quarter" | "year")}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select time period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month">Last 30 Days</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent className="h-96">
               <ResponsiveContainer width="100%" height="100%">
