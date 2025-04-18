@@ -55,6 +55,7 @@ export default function DashboardSidebar() {
     setIsOpen(false)
   }
 
+  const menuLinks = [{ icon: <Home />, label: "Dashboard", path: "/" }, { icon: <ShoppingCart />, label: "Orders", path: "/orders" }, { icon: <ShoppingBag />, label: "Products", path: "/products" }, { icon: <Users />, label: "Customers", path: "/customers" }, { icon: <Globe />, label: "Regions", path: "/regions" }, { icon: <Settings />, label: "Settings", path: "/settings" }]
   // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -126,8 +127,8 @@ export default function DashboardSidebar() {
         <div className="flex items-center justify-between h-16 border-b px-4">
           <h2
             className={cn(
-              "text-xl font-bold text-gray-800 dark:text-white transition-opacity duration-200",
-              isCollapsed ? "md:opacity-0" : "md:opacity-100",
+              "text-xl font-bold text-gray-800 dark:text-white transition-all duration-200",
+              isCollapsed ? "md:hidden" : "md:opacity-100",
             )}
           >
             StepMaster Shoes
@@ -147,114 +148,29 @@ export default function DashboardSidebar() {
 
         <nav className="mt-6 px-2 overflow-y-auto max-h-[calc(100vh-4rem)]">
           <ul className="space-y-2">
-            <li>
-              <Link
-                href="/"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <Home className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Dashboard
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/orders"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/orders")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <ShoppingCart className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Orders
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/products"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/products")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <ShoppingBag className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Products
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/customers"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/customers")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <Users className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Customers
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/regions"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/regions")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <Globe className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Regions
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/settings"
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isCollapsed && "md:justify-center",
-                  isActive("/settings")
-                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-700 dark:text-gray-200",
-                )}
-                onClick={closeSidebar}
-              >
-                <Settings className="w-5 h-5 mr-3 md:mr-0" />
-                <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
-                  Settings
-                </span>
-              </Link>
-            </li>
+            {menuLinks.map((link) => (
+              <li key={link.path}>
+                <Link
+                  href={link.path}
+                  className={cn(
+                    "flex items-center px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700",
+                    isCollapsed && "md:justify-center",
+                    isActive(link.path)
+                      ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
+                      : "text-gray-700 dark:text-gray-200",
+                  )}
+                  onClick={closeSidebar}
+                >
+                  <div className={`flex items-center justify-center w-8 h-8  ${!isCollapsed && "mr-4"}`}>
+                    {link.icon}
+                  </div>
+                  <span className={cn("transition-opacity duration-200", isCollapsed ? "md:hidden" : "md:inline")}>
+                    {link.label}
+                  </span>
+                </Link>
+              </li>
+            ))}
+
           </ul>
         </nav>
       </aside>
