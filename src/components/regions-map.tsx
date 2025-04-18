@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { regionMarketStrength } from "@/lib/mock-data"
@@ -10,6 +11,7 @@ export default function RegionsMap() {
     const [mapMetric, setMapMetric] = useState<"sales" | "marketStrength" | "growth">("sales")
     const [mapData, setMapData] = useState<Record<string, { color: string; value: number }>>({})
     const [isMobile, setIsMobile] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         // Check if mobile
@@ -106,7 +108,7 @@ export default function RegionsMap() {
     // Format value based on metric type
     const formatValue = (value: number) => {
         if (mapMetric === "sales") {
-            return `$${(value / 1000000).toFixed(1)}M`
+            return `${(value / 1000000).toFixed(1)}M`
         } else if (mapMetric === "marketStrength") {
             return `${value.toFixed(0)}%`
         } else {
@@ -114,6 +116,10 @@ export default function RegionsMap() {
         }
     }
 
+    // Handle region click
+    const handleRegionClick = (region: string) => {
+        router.push(`/regions/${encodeURIComponent(region)}`)
+    }
     return (
         <Card className="col-span-1">
             <CardHeader>
@@ -134,14 +140,15 @@ export default function RegionsMap() {
                         {Object.entries(mapData).map(([region, data]) => (
                             <div
                                 key={region}
-                                className="relative m-2 rounded-md overflow-hidden shadow-md transition-all hover:shadow-lg hover:scale-105"
+                                className="relative m-2 rounded-md overflow-hidden shadow-md transition-all hover:shadow-lg hover:scale-105 cursor-pointer"
                                 style={{
                                     width: `calc(${100 / Math.ceil(Object.keys(mapData).length / (isMobile ? 1 : 2))}% - 16px)`,
                                     height: isMobile ? "30%" : "45%",
                                     backgroundColor: data.color,
                                 }}
+                                onClick={() => handleRegionClick(region)}
                             >
-                                <div className="absolute inset-0 bg-black bg-opacity-20 flex flex-col justify-center items-center text-white p-2">
+                                <div className="absolute inset-0 bg-black bg-opacity-20 flex flex-col justify-center items-center text-white p-2 hover:bg-opacity-30">
                                     <div className="font-bold text-center text-xs sm:text-sm">{region}</div>
                                     <div className="text-xs mt-1">{formatValue(data.value)}</div>
                                 </div>

@@ -22,8 +22,12 @@ import {
     Cell,
 } from "recharts"
 
-export default function RegionPerformance() {
-    const [selectedRegion, setSelectedRegion] = useState<string>(regions[0])
+interface RegionPerformanceProps {
+    initialRegion?: string
+}
+
+export default function RegionPerformance({ initialRegion }: RegionPerformanceProps) {
+    const [selectedRegion, setSelectedRegion] = useState<string>(initialRegion || regions[0])
     const [period, setPeriod] = useState<"month" | "quarter" | "year">("year")
 
     // Get data for the selected region
