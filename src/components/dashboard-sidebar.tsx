@@ -101,7 +101,7 @@ export default function DashboardSidebar() {
         ref={buttonRef}
         variant="outline"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden shadow-md bg-white dark:bg-gray-800"
+        className={`fixed top-4 left-4 z-50 md:hidden shadow-md bg-white dark:bg-gray-800 ${isOpen && 'right-4 left-auto'}`}
         onClick={toggleSidebar}
       >
         {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

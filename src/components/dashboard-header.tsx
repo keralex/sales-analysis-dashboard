@@ -42,10 +42,10 @@ export default function DashboardHeader({
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm z-10">
-      <div className="px-4 py-3 md:px-6 md:py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+      <div className="px-4 pb-3 md:px-6 pt-16 md:py-4  ">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between ">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-4 md:mb-0">
-            StepMaster Shoes Sales Dashboard
+            StepMaster Shoes
           </h1>
 
           {/* Mobile filter toggle */}
