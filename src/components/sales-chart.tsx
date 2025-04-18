@@ -1,7 +1,7 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import type { SalesData } from "../lib/mock-data"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { SalesData } from "@/lib/mock-data"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 interface SalesChartProps {
@@ -53,14 +53,14 @@ export default function SalesChart({ currentData, previousData, period }: SalesC
       <CardHeader>
         <CardTitle>{periodLabel} Revenue Comparison</CardTitle>
       </CardHeader>
-      <CardContent className="h-80">
+      <CardContent className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
             margin={{
               top: 5,
-              right: 30,
-              left: 20,
+              right: 10,
+              left: 0,
               bottom: 5,
             }}
           >
@@ -68,15 +68,18 @@ export default function SalesChart({ currentData, previousData, period }: SalesC
             <XAxis
               dataKey="date"
               tickFormatter={(date) => new Date(date).toLocaleDateString(undefined, { day: "2-digit", month: "short" })}
+              tick={{ fontSize: 12 }}
+              minTickGap={15}
             />
-            <YAxis />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip
-              formatter={(value) => [`$${Number(value).toLocaleString()}`, undefined]}
+              formatter={(value) => [`${Number(value).toLocaleString()}`, undefined]}
               labelFormatter={(date) =>
                 new Date(date).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })
               }
+              contentStyle={{ fontSize: "12px" }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ fontSize: "12px" }} />
             <Line
               type="monotone"
               dataKey="current"

@@ -95,10 +95,10 @@ export default function RegionPerformance() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                <div className="grid gap-2">
+                <div className="grid gap-2 w-full md:w-auto">
                     <Label htmlFor="region-select">Select Region</Label>
                     <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                        <SelectTrigger id="region-select" className="w-[200px]">
+                        <SelectTrigger id="region-select" className="w-full md:w-[200px]">
                             <SelectValue placeholder="Select region" />
                         </SelectTrigger>
                         <SelectContent>
@@ -111,10 +111,10 @@ export default function RegionPerformance() {
                     </Select>
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid gap-2 w-full md:w-auto">
                     <Label htmlFor="period-select">Time Period</Label>
                     <Select value={period} onValueChange={(value) => setPeriod(value as "month" | "quarter" | "year")}>
-                        <SelectTrigger id="period-select" className="w-[200px]">
+                        <SelectTrigger id="period-select" className="w-full md:w-[200px]">
                             <SelectValue placeholder="Select period" />
                         </SelectTrigger>
                         <SelectContent>
@@ -158,7 +158,7 @@ export default function RegionPerformance() {
             </div>
 
             <Tabs defaultValue="trends" className="space-y-4">
-                <TabsList>
+                <TabsList className="w-full overflow-x-auto">
                     <TabsTrigger value="trends">Sales Trends</TabsTrigger>
                     <TabsTrigger value="products">Product Mix</TabsTrigger>
                     <TabsTrigger value="comparison">Regional Comparison</TabsTrigger>
@@ -170,14 +170,14 @@ export default function RegionPerformance() {
                             <CardTitle>Sales Trend in {selectedRegion}</CardTitle>
                             <CardDescription>Current vs Previous Period</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     data={trendData}
                                     margin={{
                                         top: 5,
-                                        right: 30,
-                                        left: 20,
+                                        right: 10,
+                                        left: 0,
                                         bottom: 5,
                                     }}
                                 >
@@ -187,10 +187,12 @@ export default function RegionPerformance() {
                                         tickFormatter={(date) =>
                                             new Date(date).toLocaleDateString(undefined, { day: "2-digit", month: "short" })
                                         }
+                                        tick={{ fontSize: 12 }}
+                                        minTickGap={15}
                                     />
-                                    <YAxis />
+                                    <YAxis tick={{ fontSize: 12 }} />
                                     <Tooltip
-                                        formatter={(value) => [`$${Number(value).toLocaleString()}`, undefined]}
+                                        formatter={(value) => [`${Number(value).toLocaleString()}`, undefined]}
                                         labelFormatter={(date) =>
                                             new Date(date).toLocaleDateString(undefined, {
                                                 day: "numeric",
@@ -198,8 +200,9 @@ export default function RegionPerformance() {
                                                 year: "numeric",
                                             })
                                         }
+                                        contentStyle={{ fontSize: "12px" }}
                                     />
-                                    <Legend />
+                                    <Legend wrapperStyle={{ fontSize: "12px" }} />
                                     <Line
                                         type="monotone"
                                         dataKey="current"
@@ -228,7 +231,7 @@ export default function RegionPerformance() {
                             <CardTitle>Product Mix in {selectedRegion}</CardTitle>
                             <CardDescription>Revenue distribution by product</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -239,14 +242,26 @@ export default function RegionPerformance() {
                                         outerRadius={80}
                                         fill="#8884d8"
                                         dataKey="value"
-                                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                        label={({ name, percent }) => {
+                                            // On smaller screens, only show percentage
+                                            if (window.innerWidth < 640) {
+                                                return `${(percent * 100).toFixed(0)}%`
+                                            }
+                                            // On larger screens, show name and percentage
+                                            return `${name}: ${(percent * 100).toFixed(0)}%`
+                                        }}
                                     >
                                         {productData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
                                     <Tooltip formatter={(value) => [`${Number(value).toLocaleString()}`, "Revenue"]} />
-                                    <Legend />
+                                    <Legend
+                                        layout="horizontal"
+                                        verticalAlign="bottom"
+                                        align="center"
+                                        wrapperStyle={{ fontSize: "12px" }}
+                                    />
                                 </PieChart>
                             </ResponsiveContainer>
                         </CardContent>
@@ -259,7 +274,7 @@ export default function RegionPerformance() {
                             <CardTitle>Regional Performance Comparison</CardTitle>
                             <CardDescription>How {selectedRegion} compares to other regions</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     data={products.map((product) => {
@@ -282,16 +297,29 @@ export default function RegionPerformance() {
                                     })}
                                     margin={{
                                         top: 20,
-                                        right: 30,
-                                        left: 20,
+                                        right: 10,
+                                        left: 0,
                                         bottom: 5,
                                     }}
+                                    layout="vertical"
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip formatter={(value) => [`$${Number(value).toLocaleString()}`, undefined]} />
-                                    <Legend />
+                                    <XAxis type="number" />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        width={100}
+                                        tick={{ fontSize: 12 }}
+                                        tickFormatter={(value) => {
+                                            // Truncate long product names on small screens
+                                            if (window.innerWidth < 640 && value.length > 10) {
+                                                return value.substring(0, 10) + "..."
+                                            }
+                                            return value
+                                        }}
+                                    />
+                                    <Tooltip formatter={(value) => [`${Number(value).toLocaleString()}`, undefined]} />
+                                    <Legend wrapperStyle={{ fontSize: "12px" }} />
                                     <Bar dataKey="regionSales" name={`${selectedRegion} Sales`} fill="#4f46e5" />
                                     <Bar dataKey="avgSales" name="Average Across Regions" fill="#94a3b8" />
                                 </BarChart>

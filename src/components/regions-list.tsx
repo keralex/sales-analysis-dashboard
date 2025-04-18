@@ -105,78 +105,82 @@ export default function RegionsList() {
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                 <CardTitle>Region Management</CardTitle>
-                <Button onClick={handleAddRegion} className="flex items-center gap-1">
+                <Button onClick={handleAddRegion} className="flex items-center gap-1 w-full sm:w-auto">
                     <Plus className="h-4 w-4" /> Add Region
                 </Button>
             </CardHeader>
             <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Region Name</TableHead>
-                            <TableHead>Market Strength</TableHead>
-                            <TableHead>Population</TableHead>
-                            <TableHead>GDP (Billion $)</TableHead>
-                            <TableHead>Sales Target</TableHead>
-                            <TableHead>Current Sales</TableHead>
-                            <TableHead>Target Achievement</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {regions.map((region) => (
-                            <TableRow key={region.id}>
-                                <TableCell className="font-medium">{region.name}</TableCell>
-                                <TableCell>{(region.marketStrength * 100).toFixed(0)}%</TableCell>
-                                <TableCell>{(region.population / 1000000).toFixed(1)}M</TableCell>
-                                <TableCell>${region.gdp.toFixed(0)}B</TableCell>
-                                <TableCell>${(region.salesTarget / 1000000).toFixed(1)}M</TableCell>
-                                <TableCell>${((regionSales[region.name] || 0) / 1000000).toFixed(1)}M</TableCell>
-                                <TableCell>
-                                    <div className="flex items-center">
-                                        <div
-                                            className={`h-2 w-full rounded-full ${getSalesTargetAchievement(region.name) >= 100
-                                                ? "bg-green-500"
-                                                : getSalesTargetAchievement(region.name) >= 75
-                                                    ? "bg-yellow-500"
-                                                    : "bg-red-500"
-                                                }`}
-                                        >
-                                            <div
-                                                className="h-full rounded-full bg-primary"
-                                                style={{
-                                                    width: `${Math.min(getSalesTargetAchievement(region.name), 100)}%`,
-                                                }}
-                                            />
-                                        </div>
-                                        <span className="ml-2 text-sm">{getSalesTargetAchievement(region.name).toFixed(0)}%</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <Button variant="outline" size="icon" onClick={() => handleEditRegion(region)}>
-                                            <Edit className="h-4 w-4" />
-                                            <span className="sr-only">Edit</span>
-                                        </Button>
-                                        <Button variant="outline" size="icon" onClick={() => handleDeleteRegion(region.id)}>
-                                            <Trash2 className="h-4 w-4" />
-                                            <span className="sr-only">Delete</span>
-                                        </Button>
-                                    </div>
-                                </TableCell>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Region Name</TableHead>
+                                <TableHead className="hidden sm:table-cell">Market Strength</TableHead>
+                                <TableHead className="hidden md:table-cell">Population</TableHead>
+                                <TableHead className="hidden md:table-cell">GDP (Billion $)</TableHead>
+                                <TableHead className="hidden lg:table-cell">Sales Target</TableHead>
+                                <TableHead>Current Sales</TableHead>
+                                <TableHead>Target Achievement</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {regions.map((region) => (
+                                <TableRow key={region.id}>
+                                    <TableCell className="font-medium">{region.name}</TableCell>
+                                    <TableCell className="hidden sm:table-cell">{(region.marketStrength * 100).toFixed(0)}%</TableCell>
+                                    <TableCell className="hidden md:table-cell">{(region.population / 1000000).toFixed(1)}M</TableCell>
+                                    <TableCell className="hidden md:table-cell">${region.gdp.toFixed(0)}B</TableCell>
+                                    <TableCell className="hidden lg:table-cell">${(region.salesTarget / 1000000).toFixed(1)}M</TableCell>
+                                    <TableCell>${((regionSales[region.name] || 0) / 1000000).toFixed(1)}M</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center">
+                                            <div
+                                                className={`h-2 w-full rounded-full ${getSalesTargetAchievement(region.name) >= 100
+                                                        ? "bg-green-500"
+                                                        : getSalesTargetAchievement(region.name) >= 75
+                                                            ? "bg-yellow-500"
+                                                            : "bg-red-500"
+                                                    }`}
+                                            >
+                                                <div
+                                                    className="h-full rounded-full bg-primary"
+                                                    style={{
+                                                        width: `${Math.min(getSalesTargetAchievement(region.name), 100)}%`,
+                                                    }}
+                                                />
+                                            </div>
+                                            <span className="ml-2 text-xs sm:text-sm">
+                                                {getSalesTargetAchievement(region.name).toFixed(0)}%
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <Button variant="outline" size="icon" onClick={() => handleEditRegion(region)}>
+                                                <Edit className="h-4 w-4" />
+                                                <span className="sr-only">Edit</span>
+                                            </Button>
+                                            <Button variant="outline" size="icon" onClick={() => handleDeleteRegion(region.id)}>
+                                                <Trash2 className="h-4 w-4" />
+                                                <span className="sr-only">Delete</span>
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogContent>
+                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingRegion && editingRegion.name ? "Edit Region" : "Add New Region"}</DialogTitle>
                             <DialogDescription>
-                                Make changes to the region details here. Click save when you&apos;re done.
+                                Make changes to the region details here. Click save when you're done.
                             </DialogDescription>
                         </DialogHeader>
 
@@ -191,7 +195,7 @@ export default function RegionsList() {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="marketStrength">Market Strength (0-100%)</Label>
                                         <Input
@@ -225,7 +229,7 @@ export default function RegionsList() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="gdp">GDP (Billion $)</Label>
                                         <Input
@@ -254,11 +258,13 @@ export default function RegionsList() {
                             </div>
                         )}
 
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        <DialogFooter className="flex flex-col sm:flex-row gap-2">
+                            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
                                 Cancel
                             </Button>
-                            <Button onClick={handleSaveRegion}>Save Changes</Button>
+                            <Button onClick={handleSaveRegion} className="w-full sm:w-auto">
+                                Save Changes
+                            </Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

@@ -7,16 +7,21 @@ import KpiCards from "./kpi-cards"
 import SalesChart from "./sales-chart"
 import RegionalSales from "./regional-sales"
 import ProductPerformance from "./product-performance"
-import { regions, products, generateSalesData } from "../lib/mock-data"
+import { regions, products, generateSalesData } from "@/lib/mock-data"
 
 export default function Dashboard() {
   const [selectedRegion, setSelectedRegion] = useState<string>("all")
   const [selectedProduct, setSelectedProduct] = useState<string>("all")
   const [comparisonPeriod, setComparisonPeriod] = useState<"month" | "quarter" | "year">("month")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Listen for sidebar collapse state changes
+  // Check if mobile and listen for sidebar collapse state changes
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
     const handleSidebarChange = () => {
       // Check if sidebar is collapsed by checking its width
       const sidebar = document.querySelector("aside")
@@ -26,17 +31,23 @@ export default function Dashboard() {
       }
     }
 
+    // Initial checks
+    checkMobile()
+    handleSidebarChange()
+
+    // Set up event listeners
+    window.addEventListener("resize", checkMobile)
+
     // Set up a MutationObserver to watch for changes to the sidebar
     const observer = new MutationObserver(handleSidebarChange)
     const sidebar = document.querySelector("aside")
 
     if (sidebar) {
       observer.observe(sidebar, { attributes: true, attributeFilter: ["class"] })
-      // Initial check
-      handleSidebarChange()
     }
 
     return () => {
+      window.removeEventListener("resize", checkMobile)
       observer.disconnect()
     }
   }, [])
@@ -77,10 +88,10 @@ export default function Dashboard() {
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <DashboardSidebar />
       <div
-        className="flex flex-col flex-1 overflow-hidden transition-all duration-200"
+        className="flex flex-col flex-1 overflow-hidden transition-all duration-200 w-full md:w-auto"
         style={{
-          marginLeft: sidebarCollapsed ? "5rem" : "16rem",
-          width: sidebarCollapsed ? "calc(100% - 5rem)" : "calc(100% - 16rem)",
+          marginLeft: isMobile ? "0" : sidebarCollapsed ? "5rem" : "16rem",
+          width: isMobile ? "100%" : sidebarCollapsed ? "calc(100% - 5rem)" : "calc(100% - 16rem)",
         }}
       >
         <DashboardHeader
@@ -93,7 +104,7 @@ export default function Dashboard() {
           onProductChange={setSelectedProduct}
           onPeriodChange={setComparisonPeriod}
         />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6">
           <KpiCards
             totalSales={currentTotalSales}
             salesGrowth={salesGrowth}
@@ -102,7 +113,7 @@ export default function Dashboard() {
             totalUnits={currentTotalUnits}
             unitsGrowth={unitsGrowth}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
             <SalesChart
               currentData={filteredCurrentData}
               previousData={filteredPreviousData}
@@ -110,7 +121,7 @@ export default function Dashboard() {
             />
             <RegionalSales data={filteredCurrentData} selectedRegion={selectedRegion} />
           </div>
-          <div className="mt-6">
+          <div className="mt-4 md:mt-6">
             <ProductPerformance data={filteredCurrentData} selectedProduct={selectedProduct} />
           </div>
         </main>

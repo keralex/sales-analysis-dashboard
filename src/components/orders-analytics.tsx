@@ -19,6 +19,7 @@ import {
     Pie,
     Cell,
 } from "recharts"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function OrdersAnalytics() {
     const [period, setPeriod] = useState<"month" | "quarter" | "year">("month")
@@ -144,7 +145,7 @@ export default function OrdersAnalytics() {
             </div>
 
             <Tabs defaultValue="trends" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-3 overflow-x-auto">
                     <TabsTrigger value="trends" onClick={() => setPeriod("month")}>
                         Order Trends
                     </TabsTrigger>
@@ -156,19 +157,32 @@ export default function OrdersAnalytics() {
                     </TabsTrigger>
                 </TabsList>
 
+                <div className="flex justify-end mb-2">
+                    <Select value={period} onValueChange={(value) => setPeriod(value as "month" | "quarter" | "year")}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select time period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="month">Last 30 Days</SelectItem>
+                            <SelectItem value="quarter">Last Quarter</SelectItem>
+                            <SelectItem value="year">Last Year</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
                 <TabsContent value="trends" className="space-y-4">
                     <Card>
                         <CardHeader>
                             <CardTitle>Order Volume Over Time</CardTitle>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     data={dateData}
                                     margin={{
                                         top: 5,
-                                        right: 30,
-                                        left: 20,
+                                        right: 10,
+                                        left: 0,
                                         bottom: 5,
                                     }}
                                 >
@@ -178,8 +192,10 @@ export default function OrdersAnalytics() {
                                         tickFormatter={(date) =>
                                             new Date(date).toLocaleDateString(undefined, { day: "2-digit", month: "short" })
                                         }
+                                        tick={{ fontSize: 12 }}
+                                        minTickGap={15}
                                     />
-                                    <YAxis />
+                                    <YAxis tick={{ fontSize: 12 }} />
                                     <Tooltip
                                         formatter={(value) => [Number(value).toLocaleString(), undefined]}
                                         labelFormatter={(date) =>
@@ -189,8 +205,9 @@ export default function OrdersAnalytics() {
                                                 year: "numeric",
                                             })
                                         }
+                                        contentStyle={{ fontSize: "12px" }}
                                     />
-                                    <Legend />
+                                    <Legend wrapperStyle={{ fontSize: "12px" }} />
                                     <Line
                                         type="monotone"
                                         dataKey="orders"
@@ -211,7 +228,7 @@ export default function OrdersAnalytics() {
                         <CardHeader>
                             <CardTitle>Orders by Region</CardTitle>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -222,14 +239,26 @@ export default function OrdersAnalytics() {
                                         outerRadius={80}
                                         fill="#8884d8"
                                         dataKey="orders"
-                                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                        label={({ name, percent }) => {
+                                            // On smaller screens, only show percentage
+                                            if (window.innerWidth < 640) {
+                                                return `${(percent * 100).toFixed(0)}%`
+                                            }
+                                            // On larger screens, show name and percentage
+                                            return `${name}: ${(percent * 100).toFixed(0)}%`
+                                        }}
                                     >
                                         {regionData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
                                     <Tooltip formatter={(value) => [Number(value).toLocaleString(), "Orders"]} />
-                                    <Legend />
+                                    <Legend
+                                        layout="horizontal"
+                                        verticalAlign="bottom"
+                                        align="center"
+                                        wrapperStyle={{ fontSize: "12px" }}
+                                    />
                                 </PieChart>
                             </ResponsiveContainer>
                         </CardContent>
@@ -241,25 +270,37 @@ export default function OrdersAnalytics() {
                         <CardHeader>
                             <CardTitle>Orders by Product</CardTitle>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[300px] sm:h-[350px] md:h-[400px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     data={productData}
                                     margin={{
                                         top: 20,
-                                        right: 30,
-                                        left: 20,
+                                        right: 10,
+                                        left: 0,
                                         bottom: 5,
                                     }}
+                                    layout="vertical"
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis yAxisId="left" orientation="left" stroke="#4f46e5" />
-                                    <YAxis yAxisId="right" orientation="right" stroke="#f43f5e" />
+                                    <XAxis type="number" />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        width={100}
+                                        tick={{ fontSize: 12 }}
+                                        tickFormatter={(value) => {
+                                            // Truncate long product names on small screens
+                                            if (window.innerWidth < 640 && value.length > 10) {
+                                                return value.substring(0, 10) + "..."
+                                            }
+                                            return value
+                                        }}
+                                    />
                                     <Tooltip formatter={(value) => [Number(value).toLocaleString(), undefined]} />
-                                    <Legend />
-                                    <Bar yAxisId="left" dataKey="orders" name="Orders" fill="#4f46e5" />
-                                    <Bar yAxisId="right" dataKey="units" name="Units Sold" fill="#f43f5e" />
+                                    <Legend wrapperStyle={{ fontSize: "12px" }} />
+                                    <Bar dataKey="orders" name="Orders" fill="#4f46e5" />
+                                    <Bar dataKey="units" name="Units Sold" fill="#f43f5e" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </CardContent>

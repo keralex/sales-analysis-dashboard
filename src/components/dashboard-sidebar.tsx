@@ -22,8 +22,26 @@ export default function DashboardSidebar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const sidebarRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add event listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -85,8 +103,13 @@ export default function DashboardSidebar() {
         className="fixed top-4 left-4 z-50 md:hidden shadow-md bg-white dark:bg-gray-800"
         onClick={toggleSidebar}
       >
-        {isOpen ? <X /> : <Menu />}
+        {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
       </Button>
+
+      {/* Sidebar overlay for mobile */}
+      {isOpen && isMobile && (
+        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setIsOpen(false)} />
+      )}
 
       {/* Desktop sidebar */}
       <aside
@@ -122,7 +145,7 @@ export default function DashboardSidebar() {
           </Button>
         </div>
 
-        <nav className="mt-6 px-2">
+        <nav className="mt-6 px-2 overflow-y-auto max-h-[calc(100vh-4rem)]">
           <ul className="space-y-2">
             <li>
               <Link

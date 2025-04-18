@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { SalesData } from "../lib/mock-data"
+import type { SalesData } from "@/lib/mock-data"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 interface ProductPerformanceProps {
@@ -48,32 +48,45 @@ export default function ProductPerformance({ data, selectedProduct }: ProductPer
       <CardHeader>
         <CardTitle>Shoe Type Performance</CardTitle>
       </CardHeader>
-      <CardContent className="h-96">
+      <CardContent className="h-[300px] sm:h-[350px] md:h-[400px] lg:h-96">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={productData}
             margin={{
               top: 20,
-              right: 30,
-              left: 20,
+              right: 10,
+              left: 0,
               bottom: 5,
             }}
+            layout="vertical"
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis yAxisId="left" orientation="left" stroke="#4f46e5" />
-            <YAxis yAxisId="right" orientation="right" stroke="#f43f5e" />
+            <XAxis type="number" />
+            <YAxis
+              dataKey="name"
+              type="category"
+              width={100}
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => {
+                // Truncate long product names on small screens
+                if (window.innerWidth < 640 && value.length > 10) {
+                  return value.substring(0, 10) + "..."
+                }
+                return value
+              }}
+            />
             <Tooltip
               formatter={(value, name) => {
-                if (name === "sales") return [`$${Number(value).toLocaleString()}`, "Revenue"]
+                if (name === "sales") return [`${Number(value).toLocaleString()}`, "Revenue"]
                 if (name === "orders") return [Number(value).toLocaleString(), "Orders"]
                 if (name === "units") return [Number(value).toLocaleString(), "Pairs Sold"]
                 return [value, name]
               }}
+              contentStyle={{ fontSize: "12px" }}
             />
-            <Legend />
-            <Bar yAxisId="left" dataKey="sales" name="Revenue ($)" fill="#4f46e5" />
-            <Bar yAxisId="right" dataKey="units" name="Pairs Sold" fill="#f43f5e" />
+            <Legend wrapperStyle={{ fontSize: "12px" }} />
+            <Bar dataKey="sales" name="Revenue ($)" fill="#4f46e5" />
+            <Bar dataKey="units" name="Pairs Sold" fill="#f43f5e" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

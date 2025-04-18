@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { SalesData } from "../lib/mock-data"
+import type { SalesData } from "@/lib/mock-data"
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 interface RegionalSalesProps {
@@ -36,7 +36,7 @@ export default function RegionalSales({ data, selectedRegion }: RegionalSalesPro
       <CardHeader>
         <CardTitle>Regional Revenue Distribution</CardTitle>
       </CardHeader>
-      <CardContent className="h-80">
+      <CardContent className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -47,14 +47,21 @@ export default function RegionalSales({ data, selectedRegion }: RegionalSalesPro
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) => {
+                // On smaller screens, only show percentage
+                if (window.innerWidth < 640) {
+                  return `${(percent * 100).toFixed(0)}%`
+                }
+                // On larger screens, show name and percentage
+                return `${name}: ${(percent * 100).toFixed(0)}%`
+              }}
             >
               {regionalData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => [`$${Number(value).toLocaleString()}`, "Revenue"]} />
-            <Legend />
+            <Tooltip formatter={(value) => [`${Number(value).toLocaleString()}`, "Revenue"]} />
+            <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ fontSize: "12px" }} />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>

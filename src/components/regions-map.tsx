@@ -9,6 +9,24 @@ import { generateSalesData } from "@/lib/mock-data"
 export default function RegionsMap() {
     const [mapMetric, setMapMetric] = useState<"sales" | "marketStrength" | "growth">("sales")
     const [mapData, setMapData] = useState<Record<string, { color: string; value: number }>>({})
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        // Check if mobile
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 640)
+        }
+
+        // Initial check
+        checkMobile()
+
+        // Add event listener
+        window.addEventListener("resize", checkMobile)
+
+        return () => {
+            window.removeEventListener("resize", checkMobile)
+        }
+    }, [])
 
     useEffect(() => {
         // Get current and previous period sales data
@@ -109,7 +127,7 @@ export default function RegionsMap() {
                 </Tabs>
             </CardHeader>
             <CardContent>
-                <div className="h-[400px] w-full relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden">
+                <div className="h-[300px] sm:h-[350px] md:h-[400px] w-full relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden">
                     {/* Simple map visualization */}
                     <div className="absolute inset-0 flex flex-wrap p-4">
                         {Object.entries(mapData).map(([region, data], index) => (
@@ -117,14 +135,14 @@ export default function RegionsMap() {
                                 key={region}
                                 className="relative m-2 rounded-md overflow-hidden shadow-md transition-all hover:shadow-lg hover:scale-105"
                                 style={{
-                                    width: `calc(${100 / Math.ceil(Object.keys(mapData).length / 2)}% - 16px)`,
-                                    height: "45%",
+                                    width: `calc(${100 / Math.ceil(Object.keys(mapData).length / (isMobile ? 1 : 2))}% - 16px)`,
+                                    height: isMobile ? "30%" : "45%",
                                     backgroundColor: data.color,
                                 }}
                             >
                                 <div className="absolute inset-0 bg-black bg-opacity-20 flex flex-col justify-center items-center text-white p-2">
-                                    <div className="font-bold text-center">{region}</div>
-                                    <div className="text-sm mt-1">{formatValue(data.value)}</div>
+                                    <div className="font-bold text-center text-xs sm:text-sm">{region}</div>
+                                    <div className="text-xs mt-1">{formatValue(data.value)}</div>
                                 </div>
                             </div>
                         ))}
