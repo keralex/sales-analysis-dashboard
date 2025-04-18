@@ -28,8 +28,15 @@ export default function CustomerAnalysis() {
   const previousPeriodData = generateCustomerData(period, -1)
 
   // Aggregate data by date
-  const aggregateByDate = (data: any[]) => {
-    const aggregated = data.reduce((acc, item) => {
+  interface CustomerData {
+    date: string
+    newCustomers: number
+    returningCustomers: number
+    totalCustomers: number
+  }
+
+  const aggregateByDate = (data: CustomerData[]) => {
+    const aggregated = data.reduce((acc: Record<string, CustomerData>, item) => {
       const date = item.date
       if (!acc[date]) {
         acc[date] = {
@@ -45,18 +52,25 @@ export default function CustomerAnalysis() {
       return acc
     }, {})
 
-    return Object.values(aggregated).sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    return Object.values(aggregated).sort((a: CustomerData, b: CustomerData) => new Date(a.date).getTime() - new Date(b.date).getTime())
   }
 
   const currentAggregated = aggregateByDate(currentPeriodData)
 
   // Aggregate data by region
-  const aggregateByRegion = (data: any[]) => {
-    const aggregated = data.reduce((acc, item) => {
+  interface RegionData {
+    region: string
+    newCustomers: number
+    returningCustomers: number
+    totalCustomers: number
+  }
+
+  const aggregateByRegion = (data: RegionData[]) => {
+    const aggregated = data.reduce((acc: Record<string, RegionData>, item) => {
       const region = item.region
       if (!acc[region]) {
         acc[region] = {
-          name: region,
+          region: region,
           newCustomers: 0,
           returningCustomers: 0,
           totalCustomers: 0,
@@ -68,7 +82,7 @@ export default function CustomerAnalysis() {
       return acc
     }, {})
 
-    return Object.values(aggregated).sort((a: any, b: any) => b.totalCustomers - a.totalCustomers)
+    return Object.values(aggregated).sort((a: RegionData, b: RegionData) => b.totalCustomers - a.totalCustomers)
   }
 
   const regionData = aggregateByRegion(currentPeriodData)

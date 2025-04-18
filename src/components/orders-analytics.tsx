@@ -45,8 +45,8 @@ export default function OrdersAnalytics() {
     const unitsPerOrder = totalOrders ? totalUnits / totalOrders : 0
 
     // Aggregate data by date
-    const aggregateByDate = (data: any[]) => {
-        const aggregated = data.reduce((acc, item) => {
+    const aggregateByDate = (data: { date: string; orders: number; units: number; sales: number }[]) => {
+        const aggregated = data.reduce((acc: Record<string, { date: string; orders: number; units: number; sales: number }>, item) => {
             const date = item.date
             if (!acc[date]) {
                 acc[date] = { date, orders: 0, units: 0, sales: 0 }
@@ -57,14 +57,14 @@ export default function OrdersAnalytics() {
             return acc
         }, {})
 
-        return Object.values(aggregated).sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        return Object.values(aggregated).sort((a: { date: string }, b: { date: string }) => new Date(a.date).getTime() - new Date(b.date).getTime())
     }
 
     const dateData = aggregateByDate(currentPeriodData)
 
     // Aggregate data by region
-    const aggregateByRegion = (data: any[]) => {
-        const aggregated = data.reduce((acc, item) => {
+    const aggregateByRegion = (data: { region: string; orders: number; sales: number }[]) => {
+        const aggregated = data.reduce((acc: Record<string, { name: string; orders: number; value: number }>, item) => {
             const region = item.region
             if (!acc[region]) {
                 acc[region] = { name: region, orders: 0, value: 0 }
@@ -74,14 +74,14 @@ export default function OrdersAnalytics() {
             return acc
         }, {})
 
-        return Object.values(aggregated).sort((a: any, b: any) => b.orders - a.orders)
+        return Object.values(aggregated).sort((a: { name: string; orders: number; value: number }, b: { name: string; orders: number; value: number }) => b.orders - a.orders)
     }
 
     const regionData = aggregateByRegion(currentPeriodData)
 
     // Aggregate data by product
-    const aggregateByProduct = (data: any[]) => {
-        const aggregated = data.reduce((acc, item) => {
+    const aggregateByProduct = (data: { product: string; orders: number; units: number }[]) => {
+        const aggregated = data.reduce((acc: Record<string, { name: string; orders: number; units: number }>, item) => {
             const product = item.product
             if (!acc[product]) {
                 acc[product] = { name: product, orders: 0, units: 0 }
@@ -91,7 +91,7 @@ export default function OrdersAnalytics() {
             return acc
         }, {})
 
-        return Object.values(aggregated).sort((a: any, b: any) => b.orders - a.orders)
+        return Object.values(aggregated).sort((a: { name: string; orders: number; units: number }, b: { name: string; orders: number; units: number }) => b.orders - a.orders)
     }
 
     const productData = aggregateByProduct(currentPeriodData)

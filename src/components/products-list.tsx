@@ -25,7 +25,16 @@ export default function ProductsList() {
     })),
   )
 
-  const [editingProduct, setEditingProduct] = useState<any>(null)
+  interface Product {
+    name: string
+    basePrice: number
+    popularity: number
+    id: string
+    stock: number
+    color: string
+  }
+
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const handleAddProduct = () => {
@@ -42,7 +51,7 @@ export default function ProductsList() {
     setIsDialogOpen(true)
   }
 
-  const handleEditProduct = (product: any) => {
+  const handleEditProduct = (product: Product) => {
     setEditingProduct({ ...product })
     setIsDialogOpen(true)
   }

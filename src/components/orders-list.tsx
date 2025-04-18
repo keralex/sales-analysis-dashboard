@@ -116,7 +116,21 @@ export default function OrdersList() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
     const [regionFilter, setRegionFilter] = useState("all")
-    const [selectedOrder, setSelectedOrder] = useState<any>(null)
+    interface Order {
+        id: string
+        date: string
+        customer: string
+        region: string
+        product: string
+        quantity: number
+        total: number
+        status: string
+        paymentMethod: string
+        shippingCost: number
+        notes: string
+    }
+
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
@@ -167,13 +181,13 @@ export default function OrdersList() {
     }
 
     // View order details
-    const handleViewOrder = (order: any) => {
+    const handleViewOrder = (order: Order) => {
         setSelectedOrder(order)
         setIsViewDialogOpen(true)
     }
 
     // Edit order
-    const handleEditOrder = (order: any) => {
+    const handleEditOrder = (order: Order) => {
         setSelectedOrder({ ...order })
         setIsEditDialogOpen(true)
     }
@@ -413,7 +427,7 @@ export default function OrdersList() {
                             <Button
                                 onClick={() => {
                                     setIsViewDialogOpen(false)
-                                    handleEditOrder(selectedOrder)
+                                    if (selectedOrder) handleEditOrder(selectedOrder)
                                 }}
                             >
                                 Edit Order

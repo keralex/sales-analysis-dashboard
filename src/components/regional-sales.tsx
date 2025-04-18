@@ -9,8 +9,7 @@ interface RegionalSalesProps {
   selectedRegion: string
 }
 
-export default function RegionalSales({ data, selectedRegion }: RegionalSalesProps) {
-  // Aggregate data by region
+export default function RegionalSales({ data }: RegionalSalesProps) {
   const aggregateByRegion = (data: SalesData[]) => {
     const aggregated = data.reduce(
       (acc, item) => {

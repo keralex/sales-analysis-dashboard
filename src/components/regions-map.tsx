@@ -72,7 +72,8 @@ export default function RegionsMap() {
         // Prepare map data based on selected metric
         const newMapData: Record<string, { color: string; value: number }> = {}
 
-        Object.keys(regionMarketStrength).forEach((region) => {
+        Object.keys(regionMarketStrength).forEach((regionKey) => {
+            const region = regionKey as keyof typeof regionMarketStrength;
             let value: number
             let color: string
 
@@ -118,7 +119,7 @@ export default function RegionsMap() {
             <CardHeader>
                 <CardTitle>Regional Overview</CardTitle>
                 <CardDescription>Visualize key metrics across different regions</CardDescription>
-                <Tabs defaultValue="sales" className="w-full" onValueChange={(value) => setMapMetric(value as any)}>
+                <Tabs defaultValue="sales" className="w-full" onValueChange={(value) => setMapMetric(value as "sales" | "marketStrength" | "growth")}>
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="sales">Sales Revenue</TabsTrigger>
                         <TabsTrigger value="marketStrength">Market Strength</TabsTrigger>
@@ -130,7 +131,7 @@ export default function RegionsMap() {
                 <div className="h-[300px] sm:h-[350px] md:h-[400px] w-full relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden">
                     {/* Simple map visualization */}
                     <div className="absolute inset-0 flex flex-wrap p-4">
-                        {Object.entries(mapData).map(([region, data], index) => (
+                        {Object.entries(mapData).map(([region, data]) => (
                             <div
                                 key={region}
                                 className="relative m-2 rounded-md overflow-hidden shadow-md transition-all hover:shadow-lg hover:scale-105"

@@ -9,7 +9,7 @@ interface ProductPerformanceProps {
   selectedProduct: string
 }
 
-export default function ProductPerformance({ data, selectedProduct }: ProductPerformanceProps) {
+export default function ProductPerformance({ data }: ProductPerformanceProps) {
   // Aggregate data by product
   const aggregateByProduct = (data: SalesData[]) => {
     const aggregated = data.reduce(

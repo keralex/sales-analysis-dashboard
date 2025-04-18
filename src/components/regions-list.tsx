@@ -139,10 +139,10 @@ export default function RegionsList() {
                                         <div className="flex items-center">
                                             <div
                                                 className={`h-2 w-full rounded-full ${getSalesTargetAchievement(region.name) >= 100
-                                                        ? "bg-green-500"
-                                                        : getSalesTargetAchievement(region.name) >= 75
-                                                            ? "bg-yellow-500"
-                                                            : "bg-red-500"
+                                                    ? "bg-green-500"
+                                                    : getSalesTargetAchievement(region.name) >= 75
+                                                        ? "bg-yellow-500"
+                                                        : "bg-red-500"
                                                     }`}
                                             >
                                                 <div
@@ -180,7 +180,7 @@ export default function RegionsList() {
                         <DialogHeader>
                             <DialogTitle>{editingRegion && editingRegion.name ? "Edit Region" : "Add New Region"}</DialogTitle>
                             <DialogDescription>
-                                Make changes to the region details here. Click save when you're done.
+                                Make changes to the region details here. Click save when you&#39;re done.
                             </DialogDescription>
                         </DialogHeader>
 

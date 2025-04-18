@@ -31,7 +31,7 @@ export default function RegionPerformance() {
     const previousPeriodData = generateSalesData(period, -1).filter((item) => item.region === selectedRegion)
 
     // Aggregate data by product for the selected region
-    const aggregateByProduct = (data: any[]) => {
+    const aggregateByProduct = (data: { product: string; sales: number }[]) => {
         const aggregated = data.reduce(
             (acc, item) => {
                 if (!acc[item.product]) {
@@ -49,7 +49,7 @@ export default function RegionPerformance() {
     const productData = aggregateByProduct(currentPeriodData)
 
     // Aggregate data by date for the selected region
-    const aggregateByDate = (data: any[]) => {
+    const aggregateByDate = (data: { date: string; sales: number; orders: number; units: number }[]): { date: string; sales: number; orders: number; units: number }[] => {
         const aggregated = data.reduce(
             (acc, item) => {
                 const date = item.date
@@ -68,11 +68,11 @@ export default function RegionPerformance() {
     }
 
     const currentDateData = aggregateByDate(currentPeriodData)
-    const previousDateData = aggregateByDate(previousPeriodData)
+    const previousDateData: { date: string; sales: number; orders: number; units: number }[] = aggregateByDate(previousPeriodData)
 
     // Combine data for trend chart
     const trendData = currentDateData.map((current) => {
-        const previous = previousDateData.find((p) => new Date(p.date).getDate() === new Date(current.date).getDate())
+        const previous = previousDateData.find((p: { date: string; sales: number; orders: number; units: number }) => new Date(p.date).getDate() === new Date(current.date).getDate())
 
         return {
             date: current.date,
