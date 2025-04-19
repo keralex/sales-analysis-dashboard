@@ -3,7 +3,7 @@
 A comprehensive sales analytics dashboard for StepMaster Shoes, providing real-time insights into sales performance, customer behavior, product performance, and regional analytics.
 
 ![Dashboard Preview](/placeholder.svg?height=400&width=800)
-
+https://sales-analysis-dashboard-pv1vu5fi5-keralexs-projects.vercel.app/
 ## Features
 
 ### Dashboard Overview
